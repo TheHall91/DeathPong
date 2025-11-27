@@ -1,4 +1,5 @@
    ;This minikernel must be included
+   ;include fixed_point_math.asm
    include 6lives.asm
    ;And these kernel options
    set kernel_options pfcolors pfheights
@@ -61,6 +62,8 @@ end
    dim _Bit0_Reset_Restrainer = y
    dim _Bit7_M0_Moving = y
    dim _Bit7_M1_Moving = z
+   dim _Ball_Velocity = ballx.e
+   dim _Ball_Direction = p.q
 
 
    ; Extra definitions for the lifebars included in 6lives.asm
@@ -90,7 +93,7 @@ __Start_Restart
 
    dim _Bit0_Left_Selection = p
    dim _Bit1_Right_Selection = p
-   
+   ; e k p.q
    a = 3 : b = 3 : c = 200 : d = 0 : e = 0 : f = 0 : g = 0 : h = 0 : i = 0
    j = 0 : k = 1 : l = 0 : m = $9E : n = 0 : o = $3e : p = 0 : q = 0 : r = 0
    s = 0 : t = 0 : u = 0 : v = 0 : w = 0 : x = 0 : y = 0 : z = 0
@@ -183,6 +186,7 @@ end
 end
 __Ball_Spawn_Lag_Loop
    ballheight = 0
+   temp6 = _Ball_Velocity
    c = c-1
    if n > 0 then AUDV0 = n : AUDC0 = 8 : AUDF0 = 28 : COLUBK = n : n = n-1 else AUDV0 = 0 : AUDV1 = 0
    drawscreen;
@@ -337,14 +341,16 @@ __Ball_P1
    k = 3
 __Skip_Ball_P1
    ;ball movement
-   temp5 = 255 : if _Bit5_B_Direction_X{5} then temp5 = 1 
+   temp5 = -1 : if _Bit5_B_Direction_X{5} then temp5 = 1 
+   if temp5 = -1 then _Ball_Direction = -0.50 else _Ball_Direction = 0.50
    ;;immobilize ball if ball has reached edge boundaries
-   if ballx > _B_Edge_Left && ballx < _B_Edge_Right then ballx = temp5 + ballx else n = 10 : goto __Ball_Spawn_Lag_Loop
+
+   if _Ball_Velocity > _B_Edge_Left && _Ball_Velocity < _B_Edge_Right then _Ball_Velocity = _Ball_Direction + _Ball_Velocity else n = 10 : goto __Ball_Spawn_Lag_Loop
    temp5 = 255 : if _Bit6_B_Direction_Y{6} then temp5 = 1
    bally = bally + temp5
 
-   if ballx < _B_Edge_Left then ballx = 200 : bally = 1 : goto __Ball_Spawn_Lag_Loop
-   if ballx > _B_Edge_Right then ballx = 200 : bally = 1 : goto __Ball_Spawn_Lag_Loop
+   ;if ballx < _B_Edge_Left then ballx = 200 : bally = 1 : goto __Ball_Spawn_Lag_Loop
+   ;if ballx > _B_Edge_Right then ballx = 200 : bally = 1 : goto __Ball_Spawn_Lag_Loop
    ;if ballx < player0x && ((bally > (player0y - 30)) && (bally < (player0y + 30) )) then _Bit5_B_Direction_X = _Bit5_B_Direction_X ^ %00100000
    if bally < _B_Edge_Top || bally > _B_Edge_Bottom then _Bit6_B_Direction_Y = _Bit6_B_Direction_Y ^ %01000000
 
