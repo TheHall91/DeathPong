@@ -63,6 +63,7 @@ end
    dim _Bit7_M0_Moving = y
    dim _Bit7_M1_Moving = z
    dim _Ball_Velocity = ballx.e
+   dim _Ball_Position_y = bally.f
    dim _Ball_Direction = p.q
 
 
@@ -342,12 +343,13 @@ __Ball_P1
 __Skip_Ball_P1
    ;ball movement
    temp5 = -1 : if _Bit5_B_Direction_X{5} then temp5 = 1 
-   if temp5 = -1 then _Ball_Direction = -0.50 else _Ball_Direction = 0.50
+   if temp5 = -1 then _Ball_Direction = -0.60 else _Ball_Direction = 0.60
    ;;immobilize ball if ball has reached edge boundaries
 
    if _Ball_Velocity > _B_Edge_Left && _Ball_Velocity < _B_Edge_Right then _Ball_Velocity = _Ball_Direction + _Ball_Velocity else n = 10 : goto __Ball_Spawn_Lag_Loop
-   temp5 = 255 : if _Bit6_B_Direction_Y{6} then temp5 = 1
-   bally = bally + temp5
+   temp6 = -1 : if _Bit6_B_Direction_Y{6} then temp6 = 1
+   if temp6 = -1 then _Ball_Direction = -0.60 else _Ball_Direction = 0.60
+   _Ball_Position_y = _Ball_Position_y + _Ball_Direction
 
    ;if ballx < _B_Edge_Left then ballx = 200 : bally = 1 : goto __Ball_Spawn_Lag_Loop
    ;if ballx > _B_Edge_Right then ballx = 200 : bally = 1 : goto __Ball_Spawn_Lag_Loop
