@@ -2,7 +2,7 @@
    ;include fixed_point_math.asm
    include 6lives.asm
    ;And these kernel options
-   set kernel_options pfcolors pfheights
+   set kernel_options pfcolors pfheights 
    ;const noscore=1
    scorecolor = $00
    pfheights:
@@ -96,7 +96,7 @@ __Start_Restart
    dim _Bit1_Right_Selection = p
    ; e k p.q
    a = 3 : b = 3 : c = 200 : d = 0 : e = 0 : f = 0 : g = 0 : h = 0 : i = 0
-   j = 0 : k = 1 : l = 0 : m = $9E : n = 0 : o = $3e : p = 0 : q = 0 : r = 0
+   j = 0 : k = 1 : l = $3e: m = $9E : n = 0 : o = 0 : p = 0 : q = 0 : r = 0
    s = 0 : t = 0 : u = 0 : v = 0 : w = 0 : x = 0 : y = 0 : z = 0
 
 
@@ -219,7 +219,7 @@ __Main_Loop
    dim ball_speed_x = 1
    dim ball_speed_y = 1
    COLUP1 = m
-   COLUP0 = o
+   COLUP0 = l
    lifecolor = $3A
 
    ;Play sound if any sound duration, k, remains
