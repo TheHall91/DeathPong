@@ -94,10 +94,12 @@ __Start_Restart
    dim _Bit1_Right_Selection = p
    ; e k p.q
    ;Score_ball_miss_p1 = r
+   ;Player 1 Color Pallette = l
+   ;Player 2 Color Pallette = m
    ;Score_ball_miss_p2 = s
    a = 3 : b = 3 : c = 200 : d = 0 : e = 0 : f = 0 : g = 0 : h = 0 : i = 0
-   j = 0 : k = 1 : l = $3e: m = $9E : n = 0 : o = 0 : p = 0 : q = 0 : r = 0
-   s = 0 : t = 0 : u = 0 : v = 0 : w = 0 : x = 0 : y = 0 : z = 0
+   j = 0 : k = 1 : l = $3e: m = $9E : n = 0 : o = 0 : p = 0 : q = 0 : r = 3
+   s = 3 : t = 0 : u = 0 : v = 0 : w = 0 : x = 0 : y = 0 : z = 0
 
 
 
@@ -109,7 +111,8 @@ __Start_Restart
    COLUP0 = $3e
    COLUP1 = $9e
    COLUPF = $80
-   COLUBK = $0
+   ;COLUBK = $0
+   COLUBK = r 
    CTRLPF = $21 
 
    missile0x = 200 : missile0y = 200
@@ -255,7 +258,6 @@ __Skip_Joystick_Precheck
 __Skip_Fire
 
    if !_Bit7_M0_Moving{7} then goto __Player_2_Missile
-
    missile0x = missile0x + 3
 
    ;  Clears missile0 if it hits the edge of the screen.
@@ -269,6 +271,7 @@ __Skip_Fire
 __Player_2_Missile
    ;Start of player 2 missile generation
    if !joy1fire then goto __Skip_Fire_2
+
    if _Bit7_M1_Moving{7} then goto __Skip_Fire_2
    _Bit7_M1_Moving{7} = 1
    _Bit4_M1_Dir_Up{4} = _Bit0_P1_Dir_Up{0}
@@ -349,19 +352,15 @@ __Skip_Ball_P1
    if temp5 = -1 then _Ball_Direction = -0.60 else _Ball_Direction = 0.60
    ;;immobilize ball if ball has reached edge boundaries
 
-   ;if _Ball_Velocity > _B_Edge_Left && _Ball_Velocity < _B_Edge_Right then _Ball_Velocity = _Ball_Direction + _Ball_Velocity else n = 10 : goto __Ball_Spawn_Lag_Loop
-   if _Ball_Velocity < _B_Edge_Left then n = 10 : goto __Ball_Spawn_Lag_Loop
-   if _Ball_Velocity > _B_Edge_Right then n = 10 : goto __Ball_Spawn_Lag_Loop
-   if _Ball_Velocity > _B_Edge_Left && _Ball_Velocity < _B_Edge_Right then _Ball_Velocity = _Ball_Direction + _Ball_Velocity
+   ;Big ass if else chain so I can implement conditional scoring for ball going out of bounds
+   if _Ball_Velocity > _B_Edge_Left && _Ball_Velocity < _B_Edge_Right then _Ball_Velocity = _Ball_Direction + _Ball_Velocity else if _Ball_Velocity <= _B_Edge_Left then n = 10 : r = r-1 : goto __Ball_Spawn_Lag_Loop
+   if _Ball_Velocity >= _B_Edge_Right then n = 10 : s = s-1 : goto __Ball_Spawn_Lag_Loop
    
 
+   ;Ball Y Position
    temp6 = -1 : if _Bit6_B_Direction_Y{6} then temp6 = 1
    if temp6 = -1 then _Ball_Direction = -0.60 else _Ball_Direction = 0.60
    _Ball_Position_y = _Ball_Position_y + _Ball_Direction
-
-   ;if ballx < _B_Edge_Left then ballx = 200 : bally = 1 : goto __Ball_Spawn_Lag_Loop
-   ;if ballx > _B_Edge_Right then ballx = 200 : bally = 1 : goto __Ball_Spawn_Lag_Loop
-   ;if ballx < player0x && ((bally > (player0y - 30)) && (bally < (player0y + 30) )) then _Bit5_B_Direction_X = _Bit5_B_Direction_X ^ %00100000
    if bally < _B_Edge_Top || bally > _B_Edge_Bottom then _Bit6_B_Direction_Y = _Bit6_B_Direction_Y ^ %01000000
 
 
