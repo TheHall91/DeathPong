@@ -31,8 +31,6 @@ end
    $2A
    $1E
    $BA
-   $8A
-   $58
 end
 
    ; Bits for player, missile direction and movement
@@ -95,13 +93,15 @@ __Start_Restart
    dim _Bit0_Left_Selection = p
    dim _Bit1_Right_Selection = p
    ; e k p.q
+   ;Score_ball_miss_p1 = r
+   ;Score_ball_miss_p2 = s
    a = 3 : b = 3 : c = 200 : d = 0 : e = 0 : f = 0 : g = 0 : h = 0 : i = 0
    j = 0 : k = 1 : l = $3e: m = $9E : n = 0 : o = 0 : p = 0 : q = 0 : r = 0
    s = 0 : t = 0 : u = 0 : v = 0 : w = 0 : x = 0 : y = 0 : z = 0
 
 
 
-   ;Coordinates of sprites
+   ; Coordinates of sprites
    player0x = 15: player0y = 60
    player1x = 130: player1y = 60
 
@@ -342,13 +342,19 @@ __Ball_P1
    if joy0down || joy1down then _Bit6_B_Direction_Y{6} = 1
    ;Set the counter, k, for the beep sound effect
    k = 3
+
 __Skip_Ball_P1
    ;ball movement
    temp5 = -1 : if _Bit5_B_Direction_X{5} then temp5 = 1 
    if temp5 = -1 then _Ball_Direction = -0.60 else _Ball_Direction = 0.60
    ;;immobilize ball if ball has reached edge boundaries
 
-   if _Ball_Velocity > _B_Edge_Left && _Ball_Velocity < _B_Edge_Right then _Ball_Velocity = _Ball_Direction + _Ball_Velocity else n = 10 : goto __Ball_Spawn_Lag_Loop
+   ;if _Ball_Velocity > _B_Edge_Left && _Ball_Velocity < _B_Edge_Right then _Ball_Velocity = _Ball_Direction + _Ball_Velocity else n = 10 : goto __Ball_Spawn_Lag_Loop
+   if _Ball_Velocity < _B_Edge_Left then n = 10 : goto __Ball_Spawn_Lag_Loop
+   if _Ball_Velocity > _B_Edge_Right then n = 10 : goto __Ball_Spawn_Lag_Loop
+   if _Ball_Velocity > _B_Edge_Left && _Ball_Velocity < _B_Edge_Right then _Ball_Velocity = _Ball_Direction + _Ball_Velocity
+   
+
    temp6 = -1 : if _Bit6_B_Direction_Y{6} then temp6 = 1
    if temp6 = -1 then _Ball_Direction = -0.60 else _Ball_Direction = 0.60
    _Ball_Position_y = _Ball_Position_y + _Ball_Direction
