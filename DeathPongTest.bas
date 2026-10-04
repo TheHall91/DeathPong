@@ -87,34 +87,37 @@ end
    const lives2 = 3
    ;const scorecolor = $0E
 __Start_Restart
+
    ; Audio channel volumes
    AUDV0 = 1 : AUDV1 = 0
 
    dim _Bit0_Left_Selection = p
    dim _Bit1_Right_Selection = p
    ; e k p.q
+   ;Startup time after reset switch = c
    ;Score_ball_miss_p1 = r
    ;Player 1 Color Pallette = l
    ;Player 2 Color Pallette = m
-   ;Score_ball_miss_p2 = s
+   ;Player 1 score remaining = r
+   ;Player 2 score remaining = s
    a = 3 : b = 3 : c = 200 : d = 0 : e = 0 : f = 0 : g = 0 : h = 0 : i = 0
    j = 0 : k = 1 : l = $3e: m = $9E : n = 0 : o = 0 : p = 0 : q = 0 : r = 3
-   s = 3 : t = 0 : u = 0 : v = 0 : w = 0 : x = 0 : y = 0 : z = 0
+   s = 3 : t = 0 : u = 0 : v = 0 : w = 0 : x = 0 : y = 10 : z = 10
 
 
 
    ; Coordinates of sprites
-   player0x = 15: player0y = 60
-   player1x = 130: player1y = 60
+   player0x = 200 : player0y = 200
+   player1x = 200 : player1y = 200
 
    ;  Playfield colors
    COLUP0 = $3e
    COLUP1 = $9e
    COLUPF = $80
-   ;COLUBK = $0
-   COLUBK = r 
+   COLUBK = $0
    CTRLPF = $21 
 
+   ; Missile initiaization and sizes
    missile0x = 200 : missile0y = 200
    missile1x = 200 : missile1y = 200
    NUSIZ0 = %00000001 : missile0height = 1 : missile1height = 1
@@ -178,18 +181,22 @@ end
 
 ; Bitmap for playfield
    playfield:
-   X.....XXXX.....................X
-   X.....X........................X
-   X.....XX.......................X
-   X.....X........................X
-   .....X..........................
+   ......XXXX......................
+   ......X.........................
+   ......XX........................
+   ......X.........................
    ................................
    ................................
-   X..............................X
-   X..............................X
-   X..............................X
-   X..............................X
+   ................................
+   ................................
+   ................................
+   ................................
+   ................................
 end
+
+
+
+
 __Ball_Spawn_Lag_Loop
    ballheight = 0
    temp6 = _Ball_Velocity
@@ -211,7 +218,9 @@ __Ball_Spawn_Lag_Loop
    ................................
    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 end
-; Set ball size, coordinates, direction, 
+; Set ball size, coordinates, direction,
+   player0x = 15: player0y = 60
+   player1x = 130: player1y = 60
    ballx = 80
    bally = 50
    ballheight = 1
@@ -365,8 +374,54 @@ __Skip_Ball_P1
 
 
 
+
+__P1_Death_Check
+   if r > 0 then goto __Skip_Death_Check else player0x = 200 : player0y = 200 : goto __Death_Loop_P1
+   if s > 0 then goto __Skip_Death_Check else player1x = 200 : player1y = 200 : goto __Death_Loop_P2
+
+
+__Death_Loop_P1
+   playfield:
+   ....XXXX...............XXXXX....
+   ....X..X...............X...X....
+   ....XXXX..................X.....
+   ....X...................X.......
+   ....X..................XXXXX....
+   ................................
+   ..X...X..XXXXX..X...X..XXXXX....
+   ..X...X....X....XX..X..XXX......
+   ..X.X.X....X....X.X.X.....XX....
+   ...X.X...XXXXX..X..XX..XXXXX....
+   ................................
+end
+   drawscreen;
+   if r=0 then goto __Death_Loop_P1
+
+
+__Death_Loop_P2
+   playfield:
+   ....XXXX...............XXX......
+   ....X..X.................X......
+   ....XXXX.................X......
+   ....X....................X......
+   ....X..................XXXXX....
+   ................................
+   ..X...X..XXXXX..X...X..XXXXX....
+   ..X...X....X....XX..X..XXX......
+   ..X.X.X....X....X.X.X.....XX....
+   ...X.X...XXXXX..X..XX..XXXXX....
+   ................................
+end
+   drawscreen;
+   if s=0 then goto __Death_Loop_P2
+
+
+__Skip_Death_Check
    ; draw the screen
    drawscreen
+
+
+; TO BE DELETED Beeps if p1 wins
 
 
    ; Code for reset switch
@@ -378,4 +433,5 @@ __Skip_Ball_P1
 
 
    goto __Start_Restart
+
 
